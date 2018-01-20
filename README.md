@@ -153,7 +153,7 @@ SASS
        padding-left: 10px
 ```
 
-Here all elements (including the block it self) listens to if the block has the
+Here all elements (including the block itself) listens to if the block has the
 block modifier **"bigger"** The syntax is very clean. Modifiers still works as usual.
 
 ## More "complex" example
