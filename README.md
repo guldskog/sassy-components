@@ -1,10 +1,10 @@
-# BEM 2
+# Sassy Components
 
 ###### Introduction
 
-**BEM 2 is inspired by BEM methodology**
+**Sassy Components is inspired by BEM methodology**
 
-Note: To understand how BEM 2 works you must first learn BEM and SASS
+Note: To understand how Sassy Components works you must first learn BEM and SASS
 - http://getbem.com/introduction/
 - http://sass-lang.com/
 
@@ -13,22 +13,23 @@ Note: To understand how BEM 2 works you must first learn BEM and SASS
 A nested selector in CSS gives the power of changing one class and effect other
 elements (this is not allowed in BEM). Therefor you only need to change one
 class and that's very practical when JavaScript is brought to the party. With
-nested selectors comes responsibility and that isn't a good thing. To remove
-responsibility from the developer we need to add a layer between the compiled
-CSS and the written CSS. This layer is key to still have a cascading effect
-like BEM. "Listeners" will be new way of thinking when writing the CSS. Very
-simple example would be "Element listens if Block has a specific modifier".
+nested selectors comes problem with often very bloated CSS and that isn't a
+good thing due to specificity concerns.
+
+To ensure the CSS artist doing it the right way a layer between the compiled
+CSS and the written CSS is needed. This layer is key to have a cascading effect
+like BEM but still enable nested selectors.
 
 ## Comparison - CSS Syntax
 
-| Select	                  | BEM	                          | BEM 2
-| ------------------------- | ----------------------------- | --------------------------------- |
-| Block	                    | .block {…}	                  | .block {…}                        |
-| Element	                  | .block__element {…}	          | .block-element {…} .              |
-| Modifier -> Block         | .block--modifier {…}	        | .block.m-modifier {…} .           |
-| Modifier -> Element       | .block__element--modifier {…} | .block-element.m-modifier {…} .   |
-| Block Modifier -> Block	  | None	                        | .block.bm-modifier {…}            |
-| Block Modifier -> Element	| None	                        | .block.bm-modifier .block-element |
+| Select	                                        | BEM	                          | Sassy Components
+| ----------------------------------------------- | ----------------------------- | ---------------------------------- |
+| Block / Component                               | .block {…}	                  | .component {…}                     |
+| Element / Part	                                | .block__element {…}	          | .p-part {…} .                      |
+| Modifier -> Block / Modification -> Component   | .block--modifier {…}	        | .component.m-modification {…} .    |
+| Modifier -> Element / Modification -> Part      | .block__element--modifier {…} | .p-part.m-modification {…} .       |
+| Component Modification -> Component	            | None	                        | .component.cm-modification {…}     |
+| Component Modification -> Part	                | None	                        | .component.cm-modification .p-part |
 
 ## Problem with BEM
 
@@ -54,140 +55,135 @@ This example shows when modifiers is used.
 Now we've added "block" on three elements and "element1", "element2" on two others. This is the way to go if you're going
 to fully follow BEM. This gets very complex and tricky when using JavaScript to change the style of a block.
 
-## Solution with BEM 2
+## Solution with Sassy Components
 
-Same situation as before but with BEM 2 syntax
+Same situation as before but with Sassy Components syntax
 
 ```
-<div class="block">
-  <div class="block-element1"></div>
-  <div class="block-element2"></div>
+<div class="component">
+  <div class="p-part1"></div>
+  <div class="p-part2"></div>
 </div>
 ```
 
-Let's make the block bigger
+Let's make the block / component bigger
 
 ```
-<div class="block bm-bigger">
-  <div class="block-element1"></div>
-  <div class="block-element2"></div>
+<div class="component cm-bigger">
+  <div class="p-part1"></div>
+  <div class="p-part2"></div>
 </div>
 ```
 
 Wow! Only one class. Now we may think this is not at all like BEM because it's
-now nested and that's the reason we need the layer between compiled CSS and
-written CSS, AKA mixins in SASS.
+now nested. SASS mixins to the rescue!
 
 ## SASS mixins
 
-| Mixins	             |
-| -------------------- |
-| +block()	           |
-| +element()	         |
-| +modifier()          |
-| +blockModifier()     |
-| +andBlockModifier()	 |
+| Mixins	                  |
+| ------------------------- |
+| +component()	            |
+| +part()	              |
+| +modification()           |
+| +componentModification()  |
+| +and()	                  |
 
-Learning these mixins is all you need.
+Now when we can use these awesome mixins.
 Let's style this block!
 
-## BEM 2 - Button Example
+## Sassy Components - Button Example
 
 HTML
 ```
 <div class="button">
-  <div class="block-text">Go to Mars</div>
-  <div class="block-icon">:)</div>
+  <div class="p-text">Go to Mars</div>
+  <div class="p-icon">:)</div>
 </div>
 ```
 
 SASS
 ```
-+block('button')
++component('button')
   width: 100px
   height: 30px
   padding: 5px
   display: flex
 
-  +element('text')
+  +part('text')
     font-size: 10px
 
-  +element('icon')
+  +part('icon')
     font-size: 8px
     padding-left: 5px
 ```
 
-Simple as that we now have a button that will send us to mars :D But it's to
+Simple as that we now have a button that will send us to mars :D But it's too
 small so we need to make it bigger.
 
 HTML
 ```
-<div class="button bm-bigger">
-  <div class="block-text">Go to Mars</div>
-  <div class="block-icon">:)</div>
+<div class="button cm-bigger">
+  <div class="p-text">Go to Mars</div>
+  <div class="p-icon">:)</div>
 </div>
 ```
 
 SASS
 ```
-+block('button')
++component('button')
   width: 100px
   padding: 5px
   display: flex
 
-  +blockModifier('bigger')
+  +componentModification('bigger')
     width: 200px
 
-  +element('text')
+  +part('text')
     font-size: 10px
 
-     +blockModifier('bigger')
+     +componentModification('bigger')
        font-size: 18px
 
-  +element('icon')
+  +part('icon')
     font-size: 8px
     padding-left: 5px
 
-    +blockModifier('bigger')
+    +componentModification('bigger')
        font-size: 16px
        padding-left: 10px
 ```
 
-Here all elements (including the block itself) listens to if the block has the
-block modifier **"bigger"** The syntax is very clean. Modifiers still works as usual.
+Here all elements (including the component itself) listens to if the component has the
+component modification **"bigger"** The syntax is very clean.
 
 ## More "complex" example
 
 ```
-+block()
++component()
 
-  +modifier()
+  +modification()
 
-  +modifier()
+  +modification()
 
-  +blockModifier()
+  +componentModification()
 
-  +element()
+  +part()
 
-    +modifier()
+    +modification()
 
-    +blockModifier()
+    +componentModification()
 
-      +andBlockModifier()
+      +and()
 
-  +element()
+  +part()
 
-    +modifier()
+    +modification()
 
-    +blockModifier()
+    +componentModification()
 
-      +andBlockModifier()
+      +and()
 
-        +andBlockModifier()
+        +and()
 
-          +modifier()
+          +modification()
 ```
-
-Try it on Codepen - DEMOS
-- No JavaScript -> https://codepen.io/joacimnilsson/pen/wpNopG
-- JavaScript Example (Vue) -> https://codepen.io/joacimnilsson/pen/MrLbPr
