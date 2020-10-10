@@ -1,0 +1,46 @@
+=component($name)
+  .#{$name}
+    @content
+
+=part($name)
+  .p-#{$name}
+    @content
+
+=modification($name)
+  &.m-#{$name}
+    @content
+
+=componentModification($name)
+  $this: &
+
+  $isComponent: str-index(unquote(#{$this}), '.p-')
+
+  $index: if($isComponent, $isComponent, 1)
+  $componentName: str-slice(unquote(#{$this}), 1, $index - 2)
+  $partName: str-slice(unquote(#{$this}), $index)
+
+  $component: unquote('#{$this}.cm-#{$name}')
+  $part: unquote('#{$componentName}.cm-#{$name} #{$partName}')
+
+  $componentModification: if($isComponent, $part, $component)
+
+  @at-root #{$componentModification}
+    @content
+
+=and($name)
+  $this: &
+
+  $isComponent: str-index(unquote(#{$this}), ' ')
+
+  $index: if($isComponent, $isComponent, 1)
+  $componentName: str-slice(unquote(#{$this}), 1, $index - 1)
+
+  $lastPart: str-slice(unquote(#{$this}), $index)
+
+  $endWithLastPart: unquote('#{$componentName}.cm-#{$name}#{$lastPart}')
+  $beginWithLastPart: unquote('#{$lastPart}.cm-#{$name}')
+
+  $and: if($isComponent, $endWithLastPart, $beginWithLastPart)
+
+  @at-root #{$and}
+    @content
