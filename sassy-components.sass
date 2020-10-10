@@ -13,16 +13,16 @@
 =componentModification($name)
   $this: &
 
-  $isComponent: str-index(unquote(#{$this}), '.p-')
+  $isPart: str-index(unquote(#{$this}), '.p-')
 
-  $index: if($isComponent, $isComponent, 1)
+  $index: if($isPart, $isPart, 1)
   $componentName: str-slice(unquote(#{$this}), 1, $index - 2)
   $partName: str-slice(unquote(#{$this}), $index)
 
   $component: unquote('#{$this}.cm-#{$name}')
   $part: unquote('#{$componentName}.cm-#{$name} #{$partName}')
 
-  $componentModification: if($isComponent, $part, $component)
+  $componentModification: if($isPart, $part, $component)
 
   @at-root #{$componentModification}
     @content
