@@ -11,7 +11,7 @@ Note: To understand how Sassy Components works you must first learn BEM and SASS
 ## Abstract
 
 A nested selector in CSS gives the power of changing one class and effect other
-elements (this is not allowed in BEM). Therefor you only need to change one
+elements (this is not allowed in BEM). Therefore you only need to change one
 class and that's very practical when JavaScript is brought to the party. With
 nested selectors comes problem with often very bloated CSS and that isn't a
 good thing due to specificity concerns.
